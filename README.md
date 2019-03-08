@@ -49,3 +49,5 @@ cd demo-entries
 yarn
 yarn start
 ```
+
+And then open in broser as http://localhost:3000 (or similar url you can see at console)
