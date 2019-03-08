@@ -6,22 +6,25 @@ import Logo from './Logo'
 
 import { Modes, DefaultMode } from './consts'
 import { Selector, Item } from './Selector'
+import { Menu } from './Menu'
 
 import { getEntriesAPI } from './api'
 
-const memoize = require('fast-memoize')
+import memoize from 'fast-memoize';
 
 
-// NOTE: react hooks not used cos need wait some time until they really become "best React practices"
-
+// memoize redundant "ajax calls"
 const getEntries = memoize(getEntriesAPI)
+
+
+// NOTE: react hooks used minimally as not sure it's very mature "best React practices"
 
 class App extends React.Component {
   state = {
     mode: DefaultMode,
     isEntriesActual: false,
     entries: [],
-    activeEntry: null,
+    //activeEntry: null,
   }
 
   onChange = async (value) => {
@@ -29,7 +32,7 @@ class App extends React.Component {
   }
 
   loadEntries() {
-    getEntriesAPI(this.state.mode).then(
+    getEntries(this.state.mode).then(
       (entries) => this.setState({
         entries,
         isEntriesActual: true,
@@ -54,18 +57,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { mode, isEntriesActual, entries, activeEntry } = this.state;
-
-    //console.log('entries', getEntries(mode))
-
-    let entriesRendered;
-    if (isEntriesActual) {
-      entriesRendered = entries.map(
-        (e, i) => <li className={e === activeEntry ? 'active' : ''} key={i} >{e}</li>
-      )
-    } else {
-      entriesRendered = <li>Loading...</li>
-    }
+    const { mode, isEntriesActual, entries } = this.state;
 
     return (
       <React.Fragment>
@@ -73,17 +65,19 @@ class App extends React.Component {
           <Logo src="/logo.png" />
 
           <Selector name="main-selector" onChange={this.onChange}
-            defaultChecked={this.state.mode}
+            defaultChecked={mode}
           >
             { Modes.map( (m, i) => <Item key={i} value={m} label={`${m} mode`} /> ) }
           </Selector>
 
         </header>
 
+
         <main>
-          <ul className={`entries ${mode}`}>
-            { entriesRendered }
-          </ul>
+          { isEntriesActual
+            ? <Menu items={entries} className={`entries ${mode}`} />
+            : <span>Loading...</span>
+          }
         </main>
       </React.Fragment>
     );

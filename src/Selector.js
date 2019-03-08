@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Selector = (props) => {
-  let { name, onChange, defaultChecked } = props
+  const { name, onChange, defaultChecked } = props
 
   const handleChange = (e) => {
     if (onChange) onChange(e.target.value);

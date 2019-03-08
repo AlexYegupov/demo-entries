@@ -13,11 +13,9 @@ const getEntriesAPI = async (mode) => (
 
           reject('no entries')
         },
-        300)
+        1000)
   )
 )
-
-
 
 
 export { getEntriesAPI }
