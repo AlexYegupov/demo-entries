@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Entries demo</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <header>
+      <span class="logo"></span>
+
+      <div>
+        <input type="radio" name="mode" value="app">app mode<br>
+        <input type="radio" name="mode" value="admin">admin mode<br>
+      </div>
+    </header>
+
+    <main>
+      <ul class="entries">
+        <li>Entry1</li>
+        <li>Entry2</li>
+        <li class="active">Entry3</li>
+      </ul>
+    </main>
+
+
+  </body>
+</html>
