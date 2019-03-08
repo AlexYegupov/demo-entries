@@ -1,23 +1,44 @@
 import React from 'react';
 
 const Selector = (props) => {
-  let { name } = props
+  let { name, onChange, defaultChecked } = props
+
+  const handleChange = (e) => {
+    if (onChange) onChange(e.target.value);
+  }
 
   return (
-    <div className="selecor">
-      { props.children.map( c =>
-        c.type === Item ? <Item {...{...c.props, ...{name}}} /> : c
+    <div className="selecor" onChange={handleChange}>
+      { props.children.map( (c, i) =>
+        c.type === Item ? (
+          <Item key={i}
+                {...
+                 {
+                   ...{
+                     name,
+                     defaultChecked: c.props.value === defaultChecked,
+                   },
+                   ...c.props
+                 }
+                }
+          />
+        ): c
       ) }
     </div>
   )
 }
 
-const Item = ({ name, value, label }) => (
-  <div>
-    <input id={`${name}-${value}`} type="radio" name={name} value={value} />
-    <label htmlFor={`${name}-${value}`}>{ label }</label>
-  </div>
-)
+const Item = ({ name, value, label, defaultChecked }) => {
+  const id = `${name}-${value}`
+
+  return (
+    <div>
+      <input id={id} type="radio" name={name} value={value}
+             defaultChecked={defaultChecked} />
+      <label htmlFor={id}>{ label }</label>
+    </div>
+  )
+}
 
 
 export { Selector, Item }

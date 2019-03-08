@@ -47,10 +47,17 @@ main {
 main > ul.entries {
   border: solid;
   padding : 1em;
-  padding-inline-start: 0;
+  /* padding-inline-start: 0; */
   margin-block-start: 0;
   margin-block-end: 0;
   width: calc(100% / 3);
+}
+
+main > ul.entries.app {
+  background: white;
+}
+
+main > ul.entries.admin {
   background: lightgray;
 }
 

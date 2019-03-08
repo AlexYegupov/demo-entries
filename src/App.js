@@ -1,61 +1,90 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React from 'react';
+
+//import logo from './logo.svg';
 import './App.css';
 import Logo from './Logo'
 
+import { Modes, DefaultMode } from './consts'
 import { Selector, Item } from './Selector'
 
-class App extends Component {
+import { getEntriesAPI } from './api'
+
+const memoize = require('fast-memoize')
+
+
+// NOTE: react hooks not used cos need wait some time until they really become "best React practices"
+
+const getEntries = memoize(getEntriesAPI)
+
+class App extends React.Component {
+  state = {
+    mode: DefaultMode,
+    isEntriesActual: false,
+    entries: [],
+    activeEntry: null,
+  }
+
+  onChange = async (value) => {
+    this.setState( {mode: value} )
+  }
+
+  loadEntries() {
+    getEntriesAPI(this.state.mode).then(
+      (entries) => this.setState({
+        entries,
+        isEntriesActual: true,
+      })
+    ).catch(
+      (error) => alert('Entries load error')  // naive alert
+    )
+  }
+
+  componentDidMount() {
+    this.loadEntries()
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.state.mode !== prevState.mode) {
+      this.setState( { isEntriesActual: false } )
+    }
+
+    if (!this.state.isEntriesActual) {
+      this.loadEntries()
+    }
+  }
+
   render() {
+    const { mode, isEntriesActual, entries, activeEntry } = this.state;
+
+    //console.log('entries', getEntries(mode))
+
+    let entriesRendered;
+    if (isEntriesActual) {
+      entriesRendered = entries.map(
+        (e, i) => <li className={e === activeEntry ? 'active' : ''} key={i} >{e}</li>
+      )
+    } else {
+      entriesRendered = <li>Loading...</li>
+    }
+
     return (
       <React.Fragment>
         <header>
           <Logo src="/logo.png" />
 
-          {/* <div className="selector">
-              <div>
-              <input id="radio-mode-app" type="radio" name="mode" value="app" />
-              <label for="radio-mode-app">app mode</label>
-              </div>
-              <div>
-              <input id="radio-mode-admin" type="radio" name="mode" value="admin" />
-              <label for="radio-mode-admin">admin mode</label>
-              </div>
-              </div> */}
-
-          <Selector name="main-selector">
-            <Item value="app" label="app mode" />
-            <Item value="admin" label="admin mode" />
+          <Selector name="main-selector" onChange={this.onChange}
+            defaultChecked={this.state.mode}
+          >
+            { Modes.map( (m, i) => <Item key={i} value={m} label={`${m} mode`} /> ) }
           </Selector>
 
         </header>
 
         <main>
-          <ul className="entries">
-            <li>Entry1</li>
-            <li>Entry2</li>
-            <li className="active">Entry3</li>
+          <ul className={`entries ${mode}`}>
+            { entriesRendered }
           </ul>
         </main>
-
-        {/*
-            <div className="App">
-            <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <p>
-            Edit <code>src/App.js</code> and save to reload.
-            </p>
-            <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            >
-            Learn React
-            </a>
-            </header>
-            </div>
-          */}
       </React.Fragment>
     );
   }
