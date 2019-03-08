@@ -41,9 +41,11 @@ https://www.dropbox.com/s/177oul0myzutlcd/react-challenge.png?dl=0
 
 
 
-# Quick start
+## Quick start
 
 ```
+git clone git@github.com:AlexYegupov/demo-entries.git
+cd demo-entries
 yarn
 yarn start
 ```
